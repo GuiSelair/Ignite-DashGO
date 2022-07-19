@@ -76,15 +76,15 @@ export default function Dashboard() {
 					minChildWidth={"320px"}
 					alignItems="flex-start"
 				>
-					<Box p="8" bg="gray.800" borderRadius={8}>
+					<Box p={["6", "8"]} bg="gray.800" borderRadius={8}>
 						<Text fontSize={"lg"} mb="4">
 							Inscritos da semana
 						</Text>
 						<Chart height={160} options={options} series={series} type="area" />
 					</Box>
-					<Box p="8" bg="gray.800" borderRadius={8}>
+					<Box p={["6", "8"]} bg="gray.800" borderRadius={8}>
 						<Text fontSize={"lg"} mb="4">
-							Inscritos da semana
+							Taxa de abertura
 						</Text>
 						<Chart height={160} options={options} series={series} type="area" />
 					</Box>
