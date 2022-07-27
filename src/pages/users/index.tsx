@@ -20,19 +20,14 @@ import {
 } from "@chakra-ui/react";
 import { RiAddLine } from "react-icons/ri";
 import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
 
 import Header from "../../components/Header";
 import Pagination from "../../components/Pagination";
 import Sidebar from "../../components/Sidebar";
+import { useUsers } from "../../services/hooks/useUsers";
 
 export default function UserList() {
-	const { isLoading, data, error } = useQuery(["users"], async () => {
-		const responseRaw = await fetch("http://localhost:3000/api/dev/users");
-		const responseData = await responseRaw.json();
-
-		return responseData;
-	});
+	const { isLoading, data, error, isFetching } = useUsers();
 
 	const isWideVersion = useBreakpointValue({
 		base: false,
@@ -50,6 +45,9 @@ export default function UserList() {
 					<Flex mb="8" justify="space-between" align="center">
 						<Heading size={"lg"} fontWeight="normal">
 							Usuários
+							{!isLoading && isFetching && (
+								<Spinner size="sm" color={"gray.500"} ml="4" />
+							)}
 						</Heading>
 
 						<Link href="/users/create" passHref>
@@ -73,7 +71,7 @@ export default function UserList() {
 						<Flex justify={"center"}>
 							<Alert status="error">
 								<AlertIcon />
-								<AlertDescription>
+								<AlertDescription color={"red.500"}>
 									Falha ao obter dados do usuários
 								</AlertDescription>
 							</Alert>
@@ -91,20 +89,22 @@ export default function UserList() {
 									</Tr>
 								</Thead>
 								<Tbody>
-									<Tr>
-										<Td px={["4", "4", "6"]}>
-											<Checkbox colorScheme={"pink"} />
-										</Td>
-										<Td>
-											<Box>
-												<Text fontWeight={"bold"}>Guilherme Selair</Text>
-												<Text fontSize={"sm"} color="gray.300">
-													guilherme.selair@gmail.com
-												</Text>
-											</Box>
-										</Td>
-										{isWideVersion && <Td>13 de Julho de 2022</Td>}
-									</Tr>
+									{data.map((user) => (
+										<Tr key={user.id}>
+											<Td px={["4", "4", "6"]}>
+												<Checkbox colorScheme={"pink"} />
+											</Td>
+											<Td>
+												<Box>
+													<Text fontWeight={"bold"}>{user.name}</Text>
+													<Text fontSize={"sm"} color="gray.300">
+														{user.email}
+													</Text>
+												</Box>
+											</Td>
+											{isWideVersion && <Td>{user.createdAt}</Td>}
+										</Tr>
+									))}
 								</Tbody>
 							</Table>
 							<Pagination />
